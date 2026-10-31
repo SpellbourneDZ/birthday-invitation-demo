@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="599.64" height="251.643" viewBox="0 0 599.64 251.643" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Portrait Fade" filter="url(#filter0_f_0_25)">
+<path d="M85.4868 71.4429C85.4868 71.4429 141.524 158.11 299.82 158.11C458.116 158.11 514.153 71.4429 514.153 71.4429" stroke-width="100" stroke="white"/>
+</g>
+<defs>
+<filter id="filter0_f_0_25" x="-3.8147e-06" y="0" width="599.64" height="251.643" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="21.7667" result="effect1_foregroundBlur_0_25"/>
+</filter>
+</defs>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://layero.ru/schema/layero-v2.json",
+  "framework": "nextjs",
+  "runtime": "ssr_next",
+  "nodeVersion": "22",
+  "buildCommand": "npm run build"
+}

@@ -1,0 +1,61 @@
+@font-face{font-family:"Receipt Geist";src:url('/assets/geist-regular.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Receipt Geist";src:url('/assets/geist-medium.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"Receipt Geist";src:url('/assets/geist-bold.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+.receipt-scene{display:flex;flex-direction:column;align-items:center;width:min(100%,1008px);margin:auto;color:#1e1f20;text-align:center;font-family:"Receipt Geist",Arial,Helvetica,sans-serif}
+.receipt-copy{width:min(100%,600px);margin-bottom:60px}
+.receipt-copy h1{margin:0 0 16px;font-size:40px;line-height:1;font-weight:700;letter-spacing:-.03em}
+.receipt-copy p{margin:0;font-size:16px;line-height:1.6}
+.receipt-copy p+p{margin-top:0}
+.receipt-printer-scene{position:relative;width:min(500px,100%);min-height:525px}
+.receipt-printer{position:absolute;z-index:0;top:0;left:0;width:100%;height:96px;box-sizing:border-box;overflow:hidden;border:1px solid #bebebe;border-radius:29px;background:linear-gradient(#454545,#101010);box-shadow:inset 0 15px 11.8px #ffffff1f}
+.receipt-printer-slot{position:absolute;top:44px;left:50%;width:min(330px,calc(100% - 42px));height:6px;transform:translateX(-50%);border-radius:121px;background:#101010}
+.receipt-printer-slot img{display:block;width:100%;height:6px;object-fit:cover;border-radius:121px}
+.receipt-print-window{position:relative;z-index:1;left:-2.5px;width:min(297px,calc(100% - 42px));margin:45px auto 0}
+.receipt-print-motion{position:relative;width:100%;height:var(--receipt-height);overflow:hidden;opacity:1;border-radius:0 0 16px 16px;background:#fff;box-shadow:0 12px 64px #0000001f}
+.receipt-print-motion>.receipt-paper{position:absolute;bottom:0;left:0}
+.receipt-print-motion.is-printing{animation:receipt-print-height 1605.393ms linear both,receipt-print-opacity 1605.393ms linear both}
+@keyframes receipt-print-height{0%{height:0}1.375%{height:0;animation-timing-function:cubic-bezier(.698,-.231,.408,1.116)}100%{height:var(--receipt-height)}}
+@keyframes receipt-print-opacity{0%{opacity:0;animation-timing-function:cubic-bezier(.5,0,.5,1)}1.375%{opacity:1}100%{opacity:1}}
+.receipt-paper{position:relative;display:flex;flex-direction:column;gap:24px;width:100%;min-height:480px;padding:44px 16px 16px;background:#fff;color:#1e1f20;text-align:center;box-sizing:border-box;font-family:"Receipt Geist",Arial,Helvetica,sans-serif}
+.receipt-paper:before{content:"";position:absolute;z-index:1;top:0;left:0;width:100%;height:20px;background:url('/assets/receipt-paper-shadow.png') center top/297px 20px no-repeat;pointer-events:none}
+.receipt-paper-export{min-height:0;padding:24px 20px}
+.receipt-paper-export:before{content:none}
+.receipt-paper-title{margin:0;font-size:20px;line-height:1;font-weight:700;letter-spacing:-.6px;text-transform:uppercase}
+.receipt-rule{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;width:100%;height:1px;flex:none}
+.receipt-rule span{height:1px;border-radius:8px;background:#ebebeb}
+.receipt-event{display:flex;flex-direction:column;gap:20px;align-items:center;width:150px;margin:0 auto;font-size:10px;line-height:1.1;font-weight:500;letter-spacing:-.3px;text-transform:uppercase}
+.receipt-event p{margin:0}
+.receipt-positions{display:flex;flex-direction:column;gap:12px;font-size:10px;line-height:1.1;font-weight:500;letter-spacing:-.3px;text-transform:uppercase}
+.receipt-row{display:grid;grid-template-columns:127.5px minmax(0,1fr);text-align:left}
+.receipt-row>span{min-width:0;overflow-wrap:anywhere}
+.receipt-row>span:last-child{text-align:right}
+.receipt-row i{display:inline-block;width:22px;font-style:normal}
+.receipt-row-heading{font-weight:700;line-height:1}
+.receipt-bottom{display:flex;flex-direction:column;gap:12px;margin-top:auto}
+.receipt-barcode{display:block;width:265px;max-width:100%;height:35px;object-fit:fill}
+.receipt-paper-export .receipt-barcode{width:100%;height:auto}
+.receipt-footer{display:flex;justify-content:space-between;color:#b2b2b2;font-size:8px;line-height:1.4}
+.receipt-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:64px}
+.receipt-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 32px;border:0;border-radius:80px;color:#fff;font:500 16px/1.4 "Receipt Geist",Arial,Helvetica,sans-serif;cursor:pointer}
+.receipt-button:disabled{cursor:not-allowed;opacity:.55}
+.receipt-button:focus-visible{outline:3px solid #006ebc;outline-offset:3px}
+.receipt-download{background:linear-gradient(#25abff,#008ef3)}
+.receipt-download{width:130px;padding-inline:0}
+.receipt-wallet{background:linear-gradient(#3c3c3c,#111)}
+.receipt-wallet-icon{position:relative;display:block;width:21.309px;height:16px;overflow:hidden;flex:none}
+.receipt-wallet-icon img:first-child{position:absolute;inset:0;width:21.309px;height:16px}
+.receipt-wallet-icon img:last-child{position:absolute;left:2.6px;top:-4.4px;width:28.4115px;height:28.4115px}
+.receipt-wallet-note,.receipt-error{margin:12px 0 0;font-size:14px;line-height:1.4}
+.receipt-wallet-note{color:#606067}
+.receipt-error{color:#b42318}
+.receipt-export-source{position:absolute;top:0;left:-10000px;width:297px;pointer-events:none}
+@media(max-width:600px){.receipt-copy{margin-bottom:36px}.receipt-copy h1{font-size:34px}.receipt-printer-scene{min-height:0}.receipt-actions{margin-top:36px}.receipt-button{padding-inline:20px;font-size:14px}.receipt-print-window{width:min(297px,calc(100% - 42px))}}
+@media(prefers-reduced-motion:reduce){.receipt-print-motion.is-printing{animation:none;height:var(--receipt-height);opacity:1}}
+
+.receipt-button{transition:transform .2s}.receipt-button:hover:not(:disabled){transform:scale(1.03)}
+
+.receipt-actions[hidden]{display:none}
+
+.receipt-actions:not([hidden]){animation:receiptActionsEnter .4s cubic-bezier(.22,.7,.18,1) both}
+@keyframes receiptActionsEnter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.receipt-actions:not([hidden]){animation:none}}

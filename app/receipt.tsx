@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import "./receipt.css";
-import { event } from "../lib/event";
+import type { EventDetails } from "../lib/content";
 
 type ReceiptData = {
+  event: EventDetails;
   name: string;
   giftLabel: string;
   drinkLabels: string[];
@@ -20,7 +21,7 @@ function ReceiptRule() {
   return <div className="receipt-rule" aria-hidden="true">{Array.from({ length: 12 }, (_, index) => <span key={index} />)}</div>;
 }
 
-export function ReceiptContent({ name, giftLabel, drinkLabels, exported = false }: ReceiptData & { exported?: boolean }) {
+export function ReceiptContent({ event, name, giftLabel, drinkLabels, exported = false }: ReceiptData & { exported?: boolean }) {
   return <article className={`receipt-paper${exported ? " receipt-paper-export" : ""}`} aria-label="Пригласительный чек">
     <h2 className="receipt-paper-title">Пригласительный<br />на день рождения</h2>
     <ReceiptRule />
@@ -43,7 +44,7 @@ export function ReceiptContent({ name, giftLabel, drinkLabels, exported = false 
   </article>;
 }
 
-export default function ReceiptScene({ name, giftLabel, drinkLabels, onBack, walletEnabled = false, onAddToWallet }: ReceiptSceneProps) {
+export default function ReceiptScene({ event, name, giftLabel, drinkLabels, onBack, walletEnabled = false, onAddToWallet }: ReceiptSceneProps) {
   const printWindowRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
@@ -122,20 +123,20 @@ export default function ReceiptScene({ name, giftLabel, drinkLabels, onBack, wal
 
   return <section className="receipt-scene" aria-label="Приглашение на день рождения">
     <div className="receipt-copy">
-      <h1>Отлично!</h1>
-      <p>Я очень рад, что ты придешь на мой день рождения!</p>
-      <p>Остался последний шаг – получить пригласительный.</p>
+      <h1>{event.receiptHeading}</h1>
+      <p>{event.receiptIntro}</p>
+      <p>{event.receiptDescription}</p>
     </div>
     <div className="receipt-printer-scene">
       <div className="receipt-print-window" ref={printWindowRef} style={{ height: ready ? height : 0, opacity: ready ? 1 : 0 }}>
         <div className={`receipt-print-motion${ready && !reducedMotion && !printed ? " is-printing" : ""}`} style={{ "--receipt-height": `${height}px` } as React.CSSProperties} onAnimationEnd={event => { if (event.target === event.currentTarget) setPrinted(true); }}>
-          <ReceiptContent name={name} giftLabel={giftLabel} drinkLabels={drinkLabels} />
+          <ReceiptContent event={event} name={name} giftLabel={giftLabel} drinkLabels={drinkLabels} />
         </div>
       </div>
       <div className="receipt-printer" aria-hidden="true">
         <div className="receipt-printer-slot"><img src="/assets/receipt-printer-slot.png" alt="" /></div>
       </div>
-      <div className="receipt-export-source" ref={exportRef} aria-hidden="true"><ReceiptContent name={name} giftLabel={giftLabel} drinkLabels={drinkLabels} exported /></div>
+      <div className="receipt-export-source" ref={exportRef} aria-hidden="true"><ReceiptContent event={event} name={name} giftLabel={giftLabel} drinkLabels={drinkLabels} exported /></div>
     </div>
     <div className="receipt-actions" hidden={!ready || !printed}>
       <button className="back-button" type="button" onClick={onBack} aria-label="Вернуться на предыдущий шаг">Назад</button>

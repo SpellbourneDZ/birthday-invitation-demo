@@ -4,6 +4,7 @@ import { Fragment, FormEvent, KeyboardEvent, TouchEvent, useEffect, useRef, useS
 import { chromatic, slotText } from "slot-text";
 import "slot-text/style.css";
 import { createGiftSwitcher, createInvitationFlow, invitationReducer } from "../lib/invitation-flow";
+import { event as eventDetails } from "../lib/event";
 import { invitationMedia } from "../lib/gift-media";
 import { drinks, drinkImageSource } from "../lib/drinks";
 import type { FlowEvent } from "../lib/invitation-flow";
@@ -265,7 +266,7 @@ export default function Home() {
   const startupMediaReady = flow.stage === "landing" ? reducedMotion || videoStatus === "ready" || videoStatus === "error" || videoStatus === "missing" : flow.stage === "gift" ? giftVisualReady || giftLoadError : true;
 
   return <StartupScreen hydrated={hydrated} mediaReady={startupMediaReady} onReveal={setStartupShown}>{hydrated && <main className={`invitation stage-${flow.stage}`}>
-    <p className="demo-notice">Демоверсия · Все данные события вымышлены. Введённое не отправляется и сбрасывается при обновлении страницы.</p>
+    {eventDetails.demoNotice && <p className="demo-notice">{eventDetails.demoNotice}</p>}
     {(flow.stage === "landing" || flow.stage === "gift") && <section className={`main-scene ${showingGift ? "show-gift" : "show-landing"}`} onKeyDown={giftKeyDown}>
       <div className={`portrait ${expanded ? "expand" : ""}`} onTouchStart={event => { touchStart.current = event.touches[0].clientX; }} onTouchEnd={giftTouchEnd}>
         <img className="portrait-image neutral" src="/assets/landing-raw-1.webp" alt="" />
@@ -279,9 +280,9 @@ export default function Home() {
         <img className="portrait-fade" src="/assets/portrait-fade.svg" alt="" />
       </div>
       {!showingGift ? <div className="landing-content">
-        <div className="event-details" id="demo-event"><span className="date"><span className="demo-calendar" aria-hidden="true"><small>ИЮЛ</small>15</span>15 июля, 18:00</span><a className="location" href="#demo-event"><img className="event-icon" src="/assets/2gis-icon.png" alt="" width="24" height="24" />Вымышленное кафе «Праздник»</a></div>
+        <div className="event-details" id="demo-event"><span className="date"><span className="demo-calendar" aria-hidden="true"><small>{eventDetails.calendarMonth}</small>{eventDetails.calendarDay}</span>{eventDetails.dateLabel}, {eventDetails.time}</span><a className="location" href={eventDetails.mapUrl || "#demo-event"}><img className="event-icon" src="/assets/2gis-icon.png" alt="" width="24" height="24" />{eventDetails.location}</a></div>
         <h1 className="hero-copy" aria-label="Приходи праздновать мой день рождения"><span className="gentle-content" aria-hidden="true"><GentleWords text="Приходи праздновать" /><br /> <GentleWords text="мой" start={20} />{" "}<BirthdayWords /></span></h1>
-        <p className="landing-description">Собираю друзей на ужин в уютном кафе. Хорошая еда, приятная компания<br className="desktop-break" /> и просто повод классно провести вечер вместе. Буду рад тебя видеть!</p>
+        <p className="landing-description">{eventDetails.description}</p>
         <form className={`rsvp-form ${toast && !flow.name.trim() ? "is-invalid" : ""}`} onSubmit={submitRsvp} noValidate><label className="sr-only" htmlFor="guest-name">Твоё имя</label><input id="guest-name" value={flow.name} maxLength={80} autoComplete="name" placeholder="Напиши свое имя" aria-invalid={!!toast && !flow.name.trim()} onChange={event => dispatch({ type: "NAME_CHANGED", name: event.target.value })} disabled={flow.rsvpAccepted || flow.landingPhase !== "idle"} /><button className="primary-button" type="submit" disabled={preparingGift || flow.landingPhase !== "idle"}>{flow.landingPhase === "submitting" ? "Отправляю…" : preparingGift ? "Загружаю…" : flow.rsvpAccepted ? "Продолжить" : "Я приду!"}</button>{toast && <div className="rsvp-feedback"><p key={toast.key} className="toast" role="alert">{toast.text}</p></div>}</form>
       </div> : <div className="gift-content">
         <h2 ref={stageHeading} tabIndex={-1}>Выбери подарок</h2>
@@ -316,6 +317,6 @@ export default function Home() {
       {toast && <p key={toast.key} className="toast" role="alert">{toast.text}</p>}
     </section>}
     {flow.stage === "invitation" && <ReceiptScene onBack={goBack} name={flow.name} giftLabel={invitationMedia.gifts[currentGiftId].label} drinkLabels={drinks.filter(drink => flow.drinkIds.includes(drink.id)).map(drink => drink.name)} />}
-    {modalOpen && <div className="modal-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setModalOpen(false); }}><div className="steam-modal" role="dialog" aria-modal="true" aria-labelledby="steam-title"><img src="/assets/steam-deck.webp" alt="Steam Deck" /><h2 id="steam-title">Коплю на SteamDeck</h2><p>Это пример вишлиста: здесь можно рассказать гостям о подарке мечты. В демоверсии все суммы и пожелания приведены для иллюстрации.</p><button ref={modalButton} className="primary-button" type="button" onClick={() => setModalOpen(false)}>Хорошо</button></div></div>}
+    {modalOpen && <div className="modal-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setModalOpen(false); }}><div className="steam-modal" role="dialog" aria-modal="true" aria-labelledby="steam-title"><img src={eventDetails.wishlistImage} alt={eventDetails.wishlistImageAlt} /><h2 id="steam-title">{eventDetails.wishlistTitle}</h2><p>{eventDetails.wishlistDescription}</p><button ref={modalButton} className="primary-button" type="button" onClick={() => setModalOpen(false)}>Хорошо</button></div></div>}
   </main>}</StartupScreen>;
 }

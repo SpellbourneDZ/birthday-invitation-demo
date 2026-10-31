@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import "./receipt.css";
+import { event } from "../lib/event";
 
 type ReceiptData = {
   name: string;
@@ -24,8 +25,8 @@ export function ReceiptContent({ name, giftLabel, drinkLabels, exported = false 
     <h2 className="receipt-paper-title">Пригласительный<br />на день рождения</h2>
     <ReceiptRule />
     <div className="receipt-event">
-      <p>Билет на празднование<br />дня рождения Алекса</p>
-      <p>Дата: 15 июля 2027<br />Время: 18:00<br />Место: Кафе «Праздник» (пример)</p>
+      <p>Билет на празднование<br />дня рождения {event.hostGenitive}</p>
+      <p>Дата: {event.dateFull}<br />Время: {event.time}<br />Место: {event.location}</p>
     </div>
     <ReceiptRule />
     <div className="receipt-positions">
@@ -37,7 +38,7 @@ export function ReceiptContent({ name, giftLabel, drinkLabels, exported = false 
     <div className="receipt-bottom">
       <img className="receipt-barcode" src={exported ? "/assets/receipt-barcode-export.svg" : "/assets/receipt-barcode.svg"} alt="" width={exported ? 257 : 265} height={exported ? 34 : 35} />
       <ReceiptRule />
-      <div className="receipt-footer"><span>ДЕМО</span><span>2027</span></div>
+      <div className="receipt-footer"><span>{event.receiptFooter}</span><span>{event.year}</span></div>
     </div>
   </article>;
 }

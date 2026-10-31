@@ -4,9 +4,10 @@ import { NextRequest } from "next/server.js";
 import { defaultContent, parseContent } from "../lib/content.ts";
 import { createSession, validSession, sameOrigin, ADMIN_COOKIE } from "../lib/admin-auth.ts";
 import { decodeImage, publishContent } from "../lib/github-content.ts";
-import { GET, POST } from "../app/api/admin/content/route.ts";
+import { POST } from "../app/api/admin/content/route.ts";
 import { POST as login } from "../app/api/admin/login/route.ts";
 import { POST as logout } from "../app/api/admin/logout/route.ts";
+import { POST as session } from "../app/api/admin/session/route.ts";
 
 process.env.ADMIN_PASSWORD = "test-admin-password";
 process.env.ADMIN_SESSION_SECRET = "test-only-session-secret-of-at-least-32-characters";
@@ -43,7 +44,7 @@ test("sessions expire, reject tampering and rotation; origins are explicit", () 
 });
 
 test("admin endpoints reject unauthenticated and cross-origin writes before GitHub", async () => {
-  assert.equal((await GET(new NextRequest("https://demo.example/api/admin/content"))).status, 401);
+  assert.equal((await POST(new NextRequest("https://demo.example/api/admin/content", { method: "POST" }))).status, 401);
   const headers = { cookie: `${ADMIN_COOKIE}=${createSession()}`, Origin: "https://attacker.example", "Content-Type": "application/json" };
   assert.equal((await POST(new NextRequest("https://demo.example/api/admin/content", { method: "POST", headers, body: "{}" }))).status, 403);
   headers.Origin = "https://demo.example";
@@ -65,6 +66,22 @@ test("login issues a protected session, rejects wrong passwords and logout clear
   assert.equal(validSession(token), true);
   const out = await logout(new NextRequest("https://demo.example/api/admin/logout", { method: "POST", headers: { Origin: "https://demo.example" } }));
   assert.match(out.headers.get("set-cookie")!, /invitation_admin=;/);
+});
+
+test("JSON login sets the cookie before the uncached session check and reports bad passwords inline", async () => {
+  const request = (password: string) => new NextRequest("https://demo.example/api/admin/login", { method: "POST", headers: { Origin: "https://demo.example", Accept: "application/json", "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ password }) });
+  assert.equal((await login(request("incorrect"))).status, 401);
+  const response = await login(request("test-admin-password"));
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("location"), null);
+  assert.match(response.headers.get("cache-control")!, /no-store/);
+  const cookie = response.headers.get("set-cookie")!.split(";")[0];
+  const check = await session(new NextRequest("https://demo.example/api/admin/session", { method: "POST", headers: { Origin: "https://demo.example", Cookie: cookie } }));
+  assert.equal(check.status, 200);
+  assert.deepEqual(await check.json(), { authenticated: true });
+  assert.match(check.headers.get("cache-control")!, /no-store/);
+  assert.equal((await session(new NextRequest("https://demo.example/api/admin/session", { method: "POST", headers: { Origin: "https://demo.example" } }))).status, 401);
+  assert.equal((await session(new NextRequest("https://demo.example/api/admin/session", { method: "POST", headers: { Origin: "https://attacker.example", Cookie: cookie } }))).status, 403);
 });
 
 test("publish preserves the base tree, commits images with content and refuses stale edits", async () => {

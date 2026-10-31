@@ -32,10 +32,12 @@ export async function POST(request: NextRequest) {
     return new Response("Invalid request", { status: 400 });
   }
   const password = new URLSearchParams(body).get("password");
+  const json = request.headers.get("accept")?.includes("application/json");
   if (!password || !checkPassword(password)) {
+    if (json) return NextResponse.json({ error: "invalid_password" }, { status: 401, headers: { "Cache-Control": "private, no-store" } });
     return NextResponse.redirect(new URL("/admin?error=1", request.headers.get("origin")!), 303);
   }
-  const response = NextResponse.redirect(new URL("/admin", request.headers.get("origin")!), 303);
+  const response = json ? NextResponse.json({ authenticated: true }, { headers: { "Cache-Control": "private, no-store" } }) : NextResponse.redirect(new URL("/admin", request.headers.get("origin")!), 303);
   response.cookies.set(ADMIN_COOKIE, createSession(), sessionCookie);
   return response;
 }

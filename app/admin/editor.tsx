@@ -47,7 +47,7 @@ export default function Editor() {
     if (dirty && !window.confirm("Загрузить опубликованную версию? Несохранённые правки будут потеряны.")) return;
     setBusy(true); setError(""); setMessage("");
     try {
-      const response = await fetch("/api/admin/content", { cache: "no-store" });
+      const response = await fetch("/api/admin/content", { method: "POST", cache: "no-store", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "read" }) });
       if (response.status === 401) throw new Error("Сессия завершена. Обновите страницу и войдите снова.");
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || "Не удалось загрузить содержимое");

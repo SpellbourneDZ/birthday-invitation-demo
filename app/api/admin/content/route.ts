@@ -9,12 +9,6 @@ function failure(error: unknown) {
   return Response.json({ error: error instanceof Error ? error.message : "Не удалось выполнить запрос" }, { status: error instanceof PublishError ? error.status : 400, headers: { "Cache-Control": "no-store" } });
 }
 
-export async function GET(request: NextRequest) {
-  if (!validSession(request.cookies.get(ADMIN_COOKIE)?.value)) return new Response("Unauthorized", { status: 401 });
-  try { return Response.json(await readGithubContent(), { headers: { "Cache-Control": "no-store" } }); }
-  catch (error) { return failure(error); }
-}
-
 export async function POST(request: NextRequest) {
   if (!validSession(request.cookies.get(ADMIN_COOKIE)?.value)) return new Response("Unauthorized", { status: 401 });
   if (!sameOrigin(request)) return new Response("Forbidden", { status: 403 });
@@ -32,6 +26,7 @@ export async function POST(request: NextRequest) {
       chunks.push(value);
     }
     const body = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    if (body.action === "read") return Response.json(await readGithubContent(), { headers: { "Cache-Control": "private, no-store" } });
     if (typeof body.revision !== "string" || !/^[a-f0-9]{40}$/.test(body.revision)) return new Response("Invalid revision", { status: 400 });
     return Response.json(await publishContent(body.content, body.revision), { headers: { "Cache-Control": "no-store" } });
   } catch (error) { return failure(error); }

@@ -1,8 +1,8 @@
-// Change event details here. All values in the template are fictional.
+// Change event details here. The event is fictional; the public venue is an example.
 export const event = {
   pageTitle: "Приглашение · Демо",
   pageDescription: "Интерактивное приглашение на день рождения. Ответы не отправляются и не сохраняются.",
-  demoNotice: "Демоверсия · Все данные события вымышлены. Введённое не отправляется и сбрасывается при обновлении страницы.",
+  demoNotice: "",
   hostGenitive: "Алекса",
   dateLabel: "15 июля",
   dateFull: "15 июля 2027",
@@ -10,8 +10,8 @@ export const event = {
   calendarDay: "15",
   calendarMonth: "ИЮЛ",
   year: "2027",
-  location: "Вымышленное кафе «Праздник»",
-  mapUrl: "", // Optional HTTPS link to your venue. Never put guest data in this URL.
+  location: "Кафе «Пушкинъ», Москва, Тверской бульвар, 26А",
+  mapUrl: "https://2gis.ru/moscow/search/%D0%9A%D0%B0%D1%84%D0%B5%20%D0%9F%D1%83%D1%88%D0%BA%D0%B8%D0%BD%D1%8A%20%D0%A2%D0%B2%D0%B5%D1%80%D1%81%D0%BA%D0%BE%D0%B9%20%D0%B1%D1%83%D0%BB%D1%8C%D0%B2%D0%B0%D1%80%2026%D0%90", // Optional HTTPS link to your venue. Never put guest data in this URL.
   description: "Собираю друзей на ужин в уютном кафе. Хорошая еда, приятная компания и просто повод классно провести вечер вместе. Буду рад тебя видеть!",
   receiptFooter: "ДЕМО",
   wishlistTitle: "Коплю на Steam Deck",
